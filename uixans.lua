@@ -8137,8 +8137,6 @@ function ModernV2:CreateWindow(Config)
 	local ConfigName = Instance.new("TextLabel")
 	local ConfigBthIcon = Instance.new("ImageLabel")
 	local SearchFrame = Instance.new("Frame")
-	SearchFrame.ZIndex = 99
-SearchFrame.BackgroundTransparency = 0 -- Pastikan ini 0 agar icon di belakangnya tertutup pekat
 	local SearchIcon = Instance.new("ImageLabel")
 	local SearchBox = Instance.new("TextBox")
 	local CloseButton = Instance.new("ImageLabel")
@@ -9032,28 +9030,17 @@ SearchFrame.BackgroundTransparency = 0 -- Pastikan ini 0 agar icon di belakangny
 	TabContainer.Size = UDim2.new(1, 0, 1, -50)
 	TabContainer.ZIndex = 5
 
-			if Window.SearchEnabled then
+		if Window.SearchEnabled then
 		Window.Searching = false;
-		
-		-- [PERBAIKAN]: Kita buat kotaknya bisa berwarna gelap untuk menutupi icon di belakang
-		SearchFrame.ZIndex = 999
-		SearchBox.ZIndex = 1000
-		SearchIcon.ZIndex = 1000
-		SearchFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30) -- Warna kotak gelap
-		
-		-- [TAMBAHAN]: Biar pinggiran kotak search-nya sedikit melengkung (elegan)
-		local SearchCorner = Instance.new("UICorner")
-		SearchCorner.CornerRadius = UDim.new(0, 6)
-		SearchCorner.Parent = SearchFrame
-
 		local Input = ModernV2:CreateInput(SearchIcon , LPH_NO_VIRTUALIZE(function()
 			Window.Searching = not Window.Searching;
 
 			if Window.Searching then
-				-- Animasi saat Memanjang (Buka)
+				-- [PERBAIKAN]: Sembunyikan Config Settings saat Search dibuka
+				if ConfigFrame then ConfigFrame.Visible = false end
+				
 				ModernV2.PlayAnimate(SearchFrame , VSlowTween , {
-					Size = UDim2.new(0, 220, 0, 30),
-					BackgroundTransparency = 0 -- 0 = Background jadi padat/hitam (menutupi icon Config)
+					Size = UDim2.new(0, 220, 0, 30)
 				})
 
 				ModernV2.PlayAnimate(SearchIcon , SlowyTween , {
@@ -9064,10 +9051,8 @@ SearchFrame.BackgroundTransparency = 0 -- Pastikan ini 0 agar icon di belakangny
 					TextTransparency = 0.350
 				})
 			else
-				-- Animasi saat Mengecil (Tutup)
 				ModernV2.PlayAnimate(SearchFrame , VSlowTween , {
-					Size = UDim2.new(0, 30, 0, 30),
-					BackgroundTransparency = 1 -- 1 = Background kembali bening
+					Size = UDim2.new(0, 30, 0, 30)
 				})
 
 				ModernV2.PlayAnimate(SearchIcon , SlowyTween , {
@@ -9079,6 +9064,9 @@ SearchFrame.BackgroundTransparency = 0 -- Pastikan ini 0 agar icon di belakangny
 				})
 
 				SearchBox.Text = "";
+				
+				-- [PERBAIKAN]: Tampilkan kembali Config Settings setelah Search tertutup
+				if ConfigFrame then ConfigFrame.Visible = true end
 			end;
 		end));	
 
