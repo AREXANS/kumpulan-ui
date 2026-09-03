@@ -9032,21 +9032,28 @@ SearchFrame.BackgroundTransparency = 0 -- Pastikan ini 0 agar icon di belakangny
 	TabContainer.Size = UDim2.new(1, 0, 1, -50)
 	TabContainer.ZIndex = 5
 
-		if Window.SearchEnabled then
+			if Window.SearchEnabled then
 		Window.Searching = false;
+		
+		-- [PERBAIKAN]: Kita buat kotaknya bisa berwarna gelap untuk menutupi icon di belakang
+		SearchFrame.ZIndex = 999
+		SearchBox.ZIndex = 1000
+		SearchIcon.ZIndex = 1000
+		SearchFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30) -- Warna kotak gelap
+		
+		-- [TAMBAHAN]: Biar pinggiran kotak search-nya sedikit melengkung (elegan)
+		local SearchCorner = Instance.new("UICorner")
+		SearchCorner.CornerRadius = UDim.new(0, 6)
+		SearchCorner.Parent = SearchFrame
+
 		local Input = ModernV2:CreateInput(SearchIcon , LPH_NO_VIRTUALIZE(function()
 			Window.Searching = not Window.Searching;
 
 			if Window.Searching then
-				-- [KODE BARU]: Otomatis menyembunyikan icon lain di kanan atas
-				for _, item in pairs(RightHeader:GetChildren()) do
-					if item:IsA("GuiObject") and item ~= SearchFrame then
-						item.Visible = false
-					end
-				end
-
+				-- Animasi saat Memanjang (Buka)
 				ModernV2.PlayAnimate(SearchFrame , VSlowTween , {
-					Size = UDim2.new(0, 220, 0, 30)
+					Size = UDim2.new(0, 220, 0, 30),
+					BackgroundTransparency = 0 -- 0 = Background jadi padat/hitam (menutupi icon Config)
 				})
 
 				ModernV2.PlayAnimate(SearchIcon , SlowyTween , {
@@ -9057,8 +9064,10 @@ SearchFrame.BackgroundTransparency = 0 -- Pastikan ini 0 agar icon di belakangny
 					TextTransparency = 0.350
 				})
 			else
+				-- Animasi saat Mengecil (Tutup)
 				ModernV2.PlayAnimate(SearchFrame , VSlowTween , {
-					Size = UDim2.new(0, 30, 0, 30)
+					Size = UDim2.new(0, 30, 0, 30),
+					BackgroundTransparency = 1 -- 1 = Background kembali bening
 				})
 
 				ModernV2.PlayAnimate(SearchIcon , SlowyTween , {
@@ -9070,13 +9079,6 @@ SearchFrame.BackgroundTransparency = 0 -- Pastikan ini 0 agar icon di belakangny
 				})
 
 				SearchBox.Text = "";
-
-				-- [KODE BARU]: Tampilkan kembali icon lain setelah ditutup
-				for _, item in pairs(RightHeader:GetChildren()) do
-					if item:IsA("GuiObject") and item ~= SearchFrame then
-						item.Visible = true
-					end
-				end
 			end;
 		end));	
 
