@@ -8479,7 +8479,7 @@ function ModernV2:CreateWindow(Config)
 	Window.Shadow = ModernV2:CreateShadow(WindowFrame);
 	Window.Shadow:Render(false);
 
-	task.delay(0.25,function()
+	task.spawn(function()
 		WindowFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 		Window:SetRender(true);
 		ModernV2:AddSignal(Window.Signal:Connect(LPH_NO_VIRTUALIZE(function(...)
@@ -8970,6 +8970,12 @@ function ModernV2:CreateWindow(Config)
 	SearchFrame.Size = UDim2.new(0, 300, 0, 35)
 	SearchFrame.ZIndex = 50
 	SearchFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+	task.spawn(function()
+		SearchFrame.Parent = WindowFrame
+		SearchFrame.AnchorPoint = Vector2.new(0.5, 1)
+		SearchFrame.Position = UDim2.new(0.5, 0, 0, -10)
+	end)
+
 
 	local SearchCorner = Instance.new("UICorner")
 	SearchCorner.CornerRadius = UDim.new(0, 6)
@@ -12409,7 +12415,7 @@ function ModernV2:CreateWindow(Config)
 			table.clear(ConfigList);
 		end;
 		
-		task.delay(1,function()
+		task.spawn(function()
 			local ConfigNameStr = ConfigLib.SelectedConfig or "Default";
 			local path = Window.ConfigFolder..'/'..ConfigNameStr;
 
