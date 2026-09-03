@@ -8155,6 +8155,49 @@ function ModernV2:CreateWindow(Config)
 	WindowFrame.Active = true;
 	Window.Root = WindowFrame;
 
+	-- === RESIZE HANDLE ===
+	local ResizeHandle = Instance.new("Frame")
+	ResizeHandle.Name = ModernV2.RandomString()
+	ResizeHandle.Parent = WindowFrame
+	ResizeHandle.Size = UDim2.new(0, 25, 0, 25)
+	ResizeHandle.AnchorPoint = Vector2.new(1, 1)
+	ResizeHandle.Position = UDim2.new(1, 0, 1, 0)
+	ResizeHandle.BackgroundTransparency = 1
+	ResizeHandle.ZIndex = 50
+	ResizeHandle.Active = true
+
+	local isResizing = false
+	local startSize = nil
+	local resizeStart = nil
+
+	ModernV2:AddSignal(ResizeHandle.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			isResizing = true
+			resizeStart = input.Position
+			startSize = WindowFrame.AbsoluteSize
+		end
+	end))
+
+	ModernV2:AddSignal(UserInputService.InputChanged:Connect(function(input)
+		if isResizing and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+			local delta = input.Position - resizeStart
+			local newWidth = math.max(300, startSize.X + delta.X)
+			local newHeight = math.max(200, startSize.Y + delta.Y)
+			WindowFrame.Size = UDim2.new(0, newWidth, 0, newHeight)
+			if Window and type(Window) == "table" then
+				Window.Size = WindowFrame.Size
+			end
+		end
+	end))
+
+	ModernV2:AddSignal(UserInputService.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			isResizing = false
+		end
+	end))
+	-- =====================
+
+
 	if Window.Loadingscreen then
 		local LoadingOverlay = Instance.new("Frame")
 		local LoadingPanel = Instance.new("Frame")
@@ -8522,7 +8565,7 @@ function ModernV2:CreateWindow(Config)
 	HeadFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	HeadFrame.BorderSizePixel = 0
 	HeadFrame.ClipsDescendants = true
-	HeadFrame.Size = UDim2.new(1, 0, 0, 50)
+	HeadFrame.Size = UDim2.new(1, 0, 0, 40)
 	HeadFrame.ZIndex = 7
 
 	LogoImage.Name = ModernV2.RandomString();
@@ -8533,7 +8576,7 @@ function ModernV2:CreateWindow(Config)
 	LogoImage.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	LogoImage.BorderSizePixel = 0
 	LogoImage.Position = UDim2.new(0, 10, 0.5, 0)
-	LogoImage.Size = UDim2.new(0, 35, 0, 35)
+	LogoImage.Size = UDim2.new(0, 25, 0, 25)
 	LogoImage.ZIndex = 7
 	LogoImage.Image = Window.Logo
 	LogoImage.ImageColor3 = ModernV2.IconColor
@@ -8547,8 +8590,8 @@ function ModernV2:CreateWindow(Config)
 	WindowName.BackgroundTransparency = 1.000
 	WindowName.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	WindowName.BorderSizePixel = 0
-	WindowName.Position = UDim2.new(0, 55, 0, 4)
-	WindowName.Size = UDim2.new(1, -65, 0, 25)
+	WindowName.Position = UDim2.new(0, 40, 0, 4)
+	WindowName.Size = UDim2.new(1, -65, 0, 20)
 	WindowName.ZIndex = 7
 	WindowName.Font = Enum.Font.GothamBold
 	WindowName.Text = Window.Name
@@ -8563,8 +8606,8 @@ function ModernV2:CreateWindow(Config)
 	WindowContent.BackgroundTransparency = 1.000
 	WindowContent.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	WindowContent.BorderSizePixel = 0
-	WindowContent.Position = UDim2.new(0, 55, 0, 25)
-	WindowContent.Size = UDim2.new(1, -65, 0, 15)
+	WindowContent.Position = UDim2.new(0, 40, 0, 20)
+	WindowContent.Size = UDim2.new(1, -65, 0, 12)
 	WindowContent.ZIndex = 7
 	WindowContent.Font = Enum.Font.GothamBold
 	WindowContent.Text = Window.Content
@@ -8870,7 +8913,7 @@ function ModernV2:CreateWindow(Config)
 	RightHeader.BackgroundTransparency = 1.000
 	RightHeader.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	RightHeader.BorderSizePixel = 0
-	RightHeader.Size = UDim2.new(1, 0, 0, 50)
+	RightHeader.Size = UDim2.new(1, 0, 0, 40)
 	RightHeader.ZIndex = 9
 
 	LineFrame_3.Name = ModernV2.RandomString();
@@ -8886,13 +8929,13 @@ function ModernV2:CreateWindow(Config)
 
 	ConfigFrame.Name = ModernV2.RandomString();
 	ConfigFrame.Parent = RightHeader
-	ConfigFrame.AnchorPoint = Vector2.new(0, 0.5)
+	ConfigFrame.AnchorPoint = Vector2.new(1, 0.5)
 	ConfigFrame.BackgroundColor3 = Color3.fromRGB(13, 17, 22)
 	ConfigFrame.BackgroundTransparency = 0.750
 	ConfigFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	ConfigFrame.BorderSizePixel = 0
-	ConfigFrame.Position = UDim2.new(0, 10, 0.5, 0)
-	ConfigFrame.Size = UDim2.new(0, 115, 0, 30)
+	ConfigFrame.Position = UDim2.new(1, -50, 0.5, 0)
+	ConfigFrame.Size = UDim2.new(0, 95, 0, 26)
 	ConfigFrame.ZIndex = 9
 
 	UIStroke_2.Transparency = 0.650
@@ -8910,7 +8953,7 @@ function ModernV2:CreateWindow(Config)
 	ConfigIcon.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	ConfigIcon.BorderSizePixel = 0
 	ConfigIcon.Position = UDim2.new(0, 2, 0.5, 0)
-	ConfigIcon.Size = UDim2.new(0, 25, 0, 25)
+	ConfigIcon.Size = UDim2.new(0, 20, 0, 20)
 	ConfigIcon.ZIndex = 9
 	ModernV2:SetIconMode(ConfigIcon, "pencil-square")
 	ConfigIcon.ImageColor3 = Color3.fromRGB(223, 223, 223)
@@ -8933,7 +8976,7 @@ function ModernV2:CreateWindow(Config)
 	ConfigName.BackgroundTransparency = 1.000
 	ConfigName.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	ConfigName.BorderSizePixel = 0
-	ConfigName.Position = UDim2.new(0, 40, 0.5, 0)
+	ConfigName.Position = UDim2.new(0, 30, 0.5, 0)
 	ConfigName.Size = UDim2.new(1, -7, 0, 15)
 	ConfigName.ZIndex = 9
 	ConfigName.Font = Enum.Font.GothamBold
@@ -8959,22 +9002,17 @@ function ModernV2:CreateWindow(Config)
 	ConfigBthIcon.ScaleType = Enum.ScaleType.Fit
 
 	SearchFrame.Name = ModernV2.RandomString();
-	SearchFrame.Parent = WindowFrame
-	SearchFrame.AnchorPoint = Vector2.new(0.5, 1)
+	SearchFrame.Parent = RightHeader
+	SearchFrame.AnchorPoint = Vector2.new(0, 0.5)
 	SearchFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	SearchFrame.BackgroundTransparency = 0
 	SearchFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	SearchFrame.BorderSizePixel = 0
 	SearchFrame.ClipsDescendants = true
-	SearchFrame.Position = UDim2.new(0.5, 0, 0, -10)
-	SearchFrame.Size = UDim2.new(0, 300, 0, 35)
+	SearchFrame.Position = UDim2.new(0, 175, 0.5, 0)
+	SearchFrame.Size = UDim2.new(1, -280, 0, 26)
 	SearchFrame.ZIndex = 50
 	SearchFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-	task.spawn(function()
-		SearchFrame.Parent = WindowFrame
-		SearchFrame.AnchorPoint = Vector2.new(0.5, 1)
-		SearchFrame.Position = UDim2.new(0.5, 0, 0, -10)
-	end)
 
 
 	local SearchCorner = Instance.new("UICorner")
@@ -9042,8 +9080,8 @@ function ModernV2:CreateWindow(Config)
 	TabContainer.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	TabContainer.BorderSizePixel = 0
 	TabContainer.ClipsDescendants = true
-	TabContainer.Position = UDim2.new(0, 0, 0, 50)
-	TabContainer.Size = UDim2.new(1, 0, 1, -50)
+	TabContainer.Position = UDim2.new(0, 0, 0, 40)
+	TabContainer.Size = UDim2.new(1, 0, 1, -40)
 	TabContainer.ZIndex = 5
 
 
