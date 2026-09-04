@@ -8141,6 +8141,7 @@ function ModernV2:CreateWindow(Config)
 	local SearchBox = Instance.new("TextBox")
 	local CloseButton = Instance.new("ImageLabel")
 	local TabContainer = Instance.new("Frame")
+	local ResizeButton = Instance.new("TextButton")
 
 	WindowFrame.Name = ModernV2.RandomString();
 	WindowFrame.Parent = ModernV2.ScreenGui;
@@ -8155,48 +8156,43 @@ function ModernV2:CreateWindow(Config)
 	WindowFrame.Active = true;
 	Window.Root = WindowFrame;
 
-	-- === RESIZE HANDLE ===
-	local ResizeHandle = Instance.new("Frame")
-	ResizeHandle.Name = ModernV2.RandomString()
-	ResizeHandle.Parent = WindowFrame
-	ResizeHandle.Size = UDim2.new(0, 25, 0, 25)
-	ResizeHandle.AnchorPoint = Vector2.new(1, 1)
-	ResizeHandle.Position = UDim2.new(1, 0, 1, 0)
-	ResizeHandle.BackgroundTransparency = 1
-	ResizeHandle.ZIndex = 50
-	ResizeHandle.Active = true
-
-	local isResizing = false
-	local startSize = nil
-	local resizeStart = nil
-
-	ModernV2:AddSignal(ResizeHandle.InputBegan:Connect(function(input)
+	ResizeButton.Name = ModernV2.RandomString()
+	ResizeButton.Parent = WindowFrame
+	ResizeButton.AnchorPoint = Vector2.new(1, 1)
+	ResizeButton.Position = UDim2.new(1, 0, 1, 0)
+	ResizeButton.Size = UDim2.new(0, 15, 0, 15)
+	ResizeButton.BackgroundTransparency = 1
+	ResizeButton.Text = "◢"
+	ResizeButton.TextSize = 14
+	ResizeButton.TextColor3 = Color3.fromRGB(150, 150, 150)
+	ResizeButton.ZIndex = 999
+	
+	local DraggingResize = false
+	local DragStartResize = nil
+	local StartSizeResize = nil
+	
+	ModernV2:AddSignal(ResizeButton.InputBegan:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-			isResizing = true
-			resizeStart = input.Position
-			startSize = WindowFrame.AbsoluteSize
+			DraggingResize = true
+			DragStartResize = input.Position
+			StartSizeResize = WindowFrame.Size
 		end
 	end))
-
+	
 	ModernV2:AddSignal(UserInputService.InputChanged:Connect(function(input)
-		if isResizing and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-			local delta = input.Position - resizeStart
-			local newWidth = math.max(300, startSize.X + delta.X)
-			local newHeight = math.max(200, startSize.Y + delta.Y)
+		if DraggingResize and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+			local delta = input.Position - DragStartResize
+			local newWidth = math.max(StartSizeResize.X.Offset + delta.X, 400)
+			local newHeight = math.max(StartSizeResize.Y.Offset + delta.Y, 300)
 			WindowFrame.Size = UDim2.new(0, newWidth, 0, newHeight)
-			if Window and type(Window) == "table" then
-				Window.Size = WindowFrame.Size
-			end
 		end
 	end))
-
+	
 	ModernV2:AddSignal(UserInputService.InputEnded:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-			isResizing = false
+			DraggingResize = false
 		end
 	end))
-	-- =====================
-
 
 	if Window.Loadingscreen then
 		local LoadingOverlay = Instance.new("Frame")
@@ -8522,7 +8518,7 @@ function ModernV2:CreateWindow(Config)
 	Window.Shadow = ModernV2:CreateShadow(WindowFrame);
 	Window.Shadow:Render(false);
 
-	task.spawn(function()
+	task.delay(0.25,function()
 		WindowFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 		Window:SetRender(true);
 		ModernV2:AddSignal(Window.Signal:Connect(LPH_NO_VIRTUALIZE(function(...)
@@ -8576,7 +8572,7 @@ function ModernV2:CreateWindow(Config)
 	LogoImage.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	LogoImage.BorderSizePixel = 0
 	LogoImage.Position = UDim2.new(0, 10, 0.5, 0)
-	LogoImage.Size = UDim2.new(0, 25, 0, 25)
+	LogoImage.Size = UDim2.new(0, 35, 0, 35)
 	LogoImage.ZIndex = 7
 	LogoImage.Image = Window.Logo
 	LogoImage.ImageColor3 = ModernV2.IconColor
@@ -8590,8 +8586,8 @@ function ModernV2:CreateWindow(Config)
 	WindowName.BackgroundTransparency = 1.000
 	WindowName.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	WindowName.BorderSizePixel = 0
-	WindowName.Position = UDim2.new(0, 40, 0, 4)
-	WindowName.Size = UDim2.new(1, -65, 0, 20)
+	WindowName.Position = UDim2.new(0, 55, 0, 4)
+	WindowName.Size = UDim2.new(1, -65, 0, 25)
 	WindowName.ZIndex = 7
 	WindowName.Font = Enum.Font.GothamBold
 	WindowName.Text = Window.Name
@@ -8606,8 +8602,8 @@ function ModernV2:CreateWindow(Config)
 	WindowContent.BackgroundTransparency = 1.000
 	WindowContent.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	WindowContent.BorderSizePixel = 0
-	WindowContent.Position = UDim2.new(0, 40, 0, 20)
-	WindowContent.Size = UDim2.new(1, -65, 0, 12)
+	WindowContent.Position = UDim2.new(0, 55, 0, 25)
+	WindowContent.Size = UDim2.new(1, -65, 0, 15)
 	WindowContent.ZIndex = 7
 	WindowContent.Font = Enum.Font.GothamBold
 	WindowContent.Text = Window.Content
@@ -8764,8 +8760,8 @@ function ModernV2:CreateWindow(Config)
 	LeftScrollingFrame.BackgroundTransparency = 1.000
 	LeftScrollingFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	LeftScrollingFrame.BorderSizePixel = 0
-	LeftScrollingFrame.Position = UDim2.new(0.5, 0, 0, 60)
-	LeftScrollingFrame.Size = UDim2.new(1, -10, 1, -115)
+	LeftScrollingFrame.Position = UDim2.new(0.5, 0, 0, 50)
+	LeftScrollingFrame.Size = UDim2.new(1, -10, 1, -95)
 	LeftScrollingFrame.ZIndex = 7
 	LeftScrollingFrame.ScrollBarThickness = 0
 
@@ -8786,7 +8782,7 @@ function ModernV2:CreateWindow(Config)
 	BottomFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	BottomFrame.BorderSizePixel = 0
 	BottomFrame.Position = UDim2.new(0, 0, 1, 0)
-	BottomFrame.Size = UDim2.new(1, 0, 0, 50)
+	BottomFrame.Size = UDim2.new(1, 0, 0, 40)
 	BottomFrame.ZIndex = 7
 
 	AccountProfile.Name = ModernV2.RandomString();
@@ -8929,13 +8925,13 @@ function ModernV2:CreateWindow(Config)
 
 	ConfigFrame.Name = ModernV2.RandomString();
 	ConfigFrame.Parent = RightHeader
-	ConfigFrame.AnchorPoint = Vector2.new(1, 0.5)
+	ConfigFrame.AnchorPoint = Vector2.new(0, 0.5)
 	ConfigFrame.BackgroundColor3 = Color3.fromRGB(13, 17, 22)
 	ConfigFrame.BackgroundTransparency = 0.750
 	ConfigFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	ConfigFrame.BorderSizePixel = 0
-	ConfigFrame.Position = UDim2.new(1, -50, 0.5, 0)
-	ConfigFrame.Size = UDim2.new(0, 95, 0, 26)
+	ConfigFrame.Position = UDim2.new(0, 5, 0.5, 0)
+	ConfigFrame.Size = UDim2.new(0, 100, 0, 26)
 	ConfigFrame.ZIndex = 9
 
 	UIStroke_2.Transparency = 0.650
@@ -8953,7 +8949,7 @@ function ModernV2:CreateWindow(Config)
 	ConfigIcon.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	ConfigIcon.BorderSizePixel = 0
 	ConfigIcon.Position = UDim2.new(0, 2, 0.5, 0)
-	ConfigIcon.Size = UDim2.new(0, 20, 0, 20)
+	ConfigIcon.Size = UDim2.new(0, 25, 0, 25)
 	ConfigIcon.ZIndex = 9
 	ModernV2:SetIconMode(ConfigIcon, "pencil-square")
 	ConfigIcon.ImageColor3 = Color3.fromRGB(223, 223, 223)
@@ -8976,7 +8972,7 @@ function ModernV2:CreateWindow(Config)
 	ConfigName.BackgroundTransparency = 1.000
 	ConfigName.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	ConfigName.BorderSizePixel = 0
-	ConfigName.Position = UDim2.new(0, 30, 0.5, 0)
+	ConfigName.Position = UDim2.new(0, 40, 0.5, 0)
 	ConfigName.Size = UDim2.new(1, -7, 0, 15)
 	ConfigName.ZIndex = 9
 	ConfigName.Font = Enum.Font.GothamBold
@@ -9009,11 +9005,10 @@ function ModernV2:CreateWindow(Config)
 	SearchFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	SearchFrame.BorderSizePixel = 0
 	SearchFrame.ClipsDescendants = true
-	SearchFrame.Position = UDim2.new(0, 175, 0.5, 0)
-	SearchFrame.Size = UDim2.new(1, -280, 0, 26)
+	SearchFrame.Position = UDim2.new(0, 110, 0.5, 0)
+	SearchFrame.Size = UDim2.new(1, -150, 0, 26)
 	SearchFrame.ZIndex = 50
 	SearchFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-
 
 	local SearchCorner = Instance.new("UICorner")
 	SearchCorner.CornerRadius = UDim.new(0, 6)
@@ -9886,17 +9881,17 @@ function ModernV2:CreateWindow(Config)
 				ColorSequenceKeypoint.new(1, Color3.fromRGB(13, 17, 22)),
 			});
 			DiscordGradient.Parent = DiscordCard;
-			local DiscordTitle = MakeText(DiscordCard, "WhatsApp", 20, true, 0);
+			local DiscordTitle = MakeText(DiscordCard, "Discord", 20, true, 0);
 			DiscordTitle.Position = UDim2.fromOffset(18, 12);
 			DiscordTitle.Size = UDim2.new(1, -36, 0, 25);
-			local DiscordSub = MakeText(DiscordCard, tostring(Config.DiscordInvite or "") ~= "" and "Tap to copy WhatsApp invite" or "No WhatsApp invite configured", 12, false, 0.250);
+			local DiscordSub = MakeText(DiscordCard, tostring(Config.DiscordInvite or "") ~= "" and "Tap to copy Discord invite" or "No Discord invite configured", 12, false, 0.250);
 			DiscordSub.Position = UDim2.fromOffset(18, 38);
 			DiscordSub.Size = UDim2.new(1, -36, 0, 18);
 			ModernV2:CreateInput(DiscordCard, function()
 				if tostring(Config.DiscordInvite or "") == "" then
 					return;
 				end;
-				local Link = "https://chat.whatsapp.com/"..tostring(Config.DiscordInvite);
+				local Link = "https://discord.gg/"..tostring(Config.DiscordInvite);
 				if setclipboard then setclipboard(Link); elseif toclipboard then toclipboard(Link); elseif set_clipboard then set_clipboard(Link); end;
 				Window:Notify({ Title = "Copied", Content = Link, Duration = 2, Icon = "lucide:check" });
 			end);
@@ -10212,10 +10207,10 @@ function ModernV2:CreateWindow(Config)
 
 			if tostring(Config.DiscordInvite or "") ~= "" then
 				ServerSection:AddButton({
-					Name = "Copy WhatsApp",
+					Name = "Copy Discord",
 					Icon = "lucide:message-circle",
 					Callback = function()
-						local Link = "https://chat.whatsapp.com/"..tostring(Config.DiscordInvite);
+						local Link = "https://discord.gg/"..tostring(Config.DiscordInvite);
 
 						if setclipboard then
 							setclipboard(Link);
@@ -12453,7 +12448,7 @@ function ModernV2:CreateWindow(Config)
 			table.clear(ConfigList);
 		end;
 		
-		task.spawn(function()
+		task.delay(1,function()
 			local ConfigNameStr = ConfigLib.SelectedConfig or "Default";
 			local path = Window.ConfigFolder..'/'..ConfigNameStr;
 
