@@ -8721,8 +8721,8 @@ function ModernV2:CreateWindow(Config)
 	LeftScrollingFrame.BackgroundTransparency = 1.000
 	LeftScrollingFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	LeftScrollingFrame.BorderSizePixel = 0
-	LeftScrollingFrame.Position = UDim2.new(0.5, 0, 0, 60)
-	LeftScrollingFrame.Size = UDim2.new(1, -10, 1, -115)
+	LeftScrollingFrame.Position = Window.SearchEnabled and UDim2.new(0.5, 0, 0, 90) or UDim2.new(0.5, 0, 0, 60)
+	LeftScrollingFrame.Size = Window.SearchEnabled and UDim2.new(1, -10, 1, -145) or UDim2.new(1, -10, 1, -115)
 	LeftScrollingFrame.ZIndex = 7
 	LeftScrollingFrame.ScrollBarThickness = 0
 
@@ -8959,16 +8959,25 @@ function ModernV2:CreateWindow(Config)
 	ConfigBthIcon.ScaleType = Enum.ScaleType.Fit
 
 	SearchFrame.Name = ModernV2.RandomString();
-	SearchFrame.Parent = RightHeader
-	SearchFrame.AnchorPoint = Vector2.new(1, 0.5)
-	SearchFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	SearchFrame.BackgroundTransparency = 1.000
+	SearchFrame.Parent = LeftMenuFrame
+	SearchFrame.AnchorPoint = Vector2.new(0, 0)
+	SearchFrame.BackgroundColor3 = Color3.fromRGB(13, 17, 22)
+	SearchFrame.BackgroundTransparency = 0.750
 	SearchFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	SearchFrame.BorderSizePixel = 0
 	SearchFrame.ClipsDescendants = true
-	SearchFrame.Position = UDim2.new(1, -45, 0.5, 0)
-	SearchFrame.Size = UDim2.new(0, 30, 0, 30)
+	SearchFrame.Position = UDim2.new(0, 8, 0, 56)
+	SearchFrame.Size = UDim2.new(1, -16, 0, 28)
 	SearchFrame.ZIndex = 12
+
+	local SearchFrameCorner = Instance.new("UICorner")
+	SearchFrameCorner.CornerRadius = UDim.new(0, 5)
+	SearchFrameCorner.Parent = SearchFrame
+
+	local SearchFrameStroke = Instance.new("UIStroke")
+	SearchFrameStroke.Color = Color3.fromRGB(45, 48, 58)
+	SearchFrameStroke.Transparency = 0.650
+	SearchFrameStroke.Parent = SearchFrame
 
 	SearchIcon.Name = ModernV2.RandomString();
 	SearchIcon.Parent = SearchFrame
@@ -8977,8 +8986,8 @@ function ModernV2:CreateWindow(Config)
 	SearchIcon.BackgroundTransparency = 1.000
 	SearchIcon.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	SearchIcon.BorderSizePixel = 0
-	SearchIcon.Position = UDim2.new(0, 2, 0.5, 0)
-	SearchIcon.Size = UDim2.new(0, 25, 0, 25)
+	SearchIcon.Position = UDim2.new(0, 5, 0.5, 0)
+	SearchIcon.Size = UDim2.new(0, 18, 0, 18)
 	SearchIcon.ZIndex = 12
 	ModernV2:SetIconMode(SearchIcon, "magnifying-glass")
 	SearchIcon.ImageColor3 = Color3.fromRGB(223, 223, 223)
@@ -8992,16 +9001,16 @@ function ModernV2:CreateWindow(Config)
 	SearchBox.BackgroundTransparency = 1.000
 	SearchBox.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	SearchBox.BorderSizePixel = 0
-	SearchBox.Position = UDim2.new(0, 35, 0.5, 0)
-	SearchBox.Size = UDim2.new(1, -35, 0, 25)
+	SearchBox.Position = UDim2.new(0, 26, 0.5, 0)
+	SearchBox.Size = UDim2.new(1, -30, 1, 0)
 	SearchBox.ZIndex = 12
 	SearchBox.ClearTextOnFocus = false
 	SearchBox.Font = Enum.Font.GothamBold
-	SearchBox.PlaceholderText = "Search"
+	SearchBox.PlaceholderText = "Search..."
 	SearchBox.Text = ""
 	SearchBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-	SearchBox.TextSize = 13.000
-	SearchBox.TextTransparency = 1
+	SearchBox.TextSize = 11.000
+	SearchBox.TextTransparency = 0.350
 	SearchBox.TextXAlignment = Enum.TextXAlignment.Left
 
 	CloseButton.Name = ModernV2.RandomString();
@@ -9031,40 +9040,10 @@ function ModernV2:CreateWindow(Config)
 	TabContainer.ZIndex = 5
 
 	if Window.SearchEnabled then
-		Window.Searching = false;
-		local Input = ModernV2:CreateInput(SearchIcon , LPH_NO_VIRTUALIZE(function()
-			Window.Searching = not Window.Searching;
+		ModernV2:CreateInput(SearchIcon, LPH_NO_VIRTUALIZE(function()
+			SearchBox:CaptureFocus();
+		end));
 
-			if Window.Searching then
-				ModernV2.PlayAnimate(SearchFrame , VSlowTween , {
-					Size = UDim2.new(0, 220, 0, 30)
-				})
-
-				ModernV2.PlayAnimate(SearchIcon , SlowyTween , {
-					TextTransparency = 0.25
-				})
-
-				ModernV2.PlayAnimate(SearchBox , VSlowTween , {
-					TextTransparency = 0.350
-				})
-			else
-				ModernV2.PlayAnimate(SearchFrame , VSlowTween , {
-					Size = UDim2.new(0, 30, 0, 30)
-				})
-
-				ModernV2.PlayAnimate(SearchIcon , SlowyTween , {
-					TextTransparency = 0.45
-				})
-
-				ModernV2.PlayAnimate(SearchBox , SlowyTween , {
-					TextTransparency = 1
-				})
-
-				SearchBox.Text = "";
-			end;
-		end));	
-
-		
 		local SearchDropdown = Instance.new("Frame")
 		local SearchDropdownCorner = Instance.new("UICorner")
 		local SearchDropdownStroke = Instance.new("UIStroke")
@@ -9077,7 +9056,7 @@ function ModernV2:CreateWindow(Config)
 		SearchDropdown.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		SearchDropdown.BorderSizePixel = 0
 		SearchDropdown.ClipsDescendants = true
-		SearchDropdown.Size = UDim2.new(0, 220, 0, 0)
+		SearchDropdown.Size = UDim2.new(0, SearchFrame.AbsoluteSize.X, 0, 0)
 		SearchDropdown.ZIndex = 150
 		SearchDropdown.Visible = false
 
@@ -9108,7 +9087,8 @@ function ModernV2:CreateWindow(Config)
 
 		local function updateSearchDropdownPos()
 			if SearchDropdown.Visible then
-				SearchDropdown.Position = UDim2.new(0, SearchFrame.AbsolutePosition.X - (220 - SearchFrame.AbsoluteSize.X), 0, SearchFrame.AbsolutePosition.Y + 35)
+				local dropWidth = math.max(150, SearchFrame.AbsoluteSize.X)
+				SearchDropdown.Position = UDim2.new(0, SearchFrame.AbsolutePosition.X, 0, SearchFrame.AbsolutePosition.Y + SearchFrame.AbsoluteSize.Y + 4)
 			end
 		end
 
@@ -9123,9 +9103,11 @@ function ModernV2:CreateWindow(Config)
 				if child:IsA("Frame") then child:Destroy() end
 			end
 
+			local dropWidth = math.max(150, SearchFrame.AbsoluteSize.X)
+
 			if not SearchBox.Text:byte() then
 				SearchDropdown.Visible = false
-				SearchDropdown.Size = UDim2.new(0, 220, 0, 0)
+				SearchDropdown.Size = UDim2.new(0, dropWidth, 0, 0)
 				for i,v in next , ModernV2.NameRegisitry do
 					v.Root.Visible = true;
 				end;
@@ -9172,7 +9154,7 @@ function ModernV2:CreateWindow(Config)
 							ResultLabel.Font = Enum.Font.GothamBold
 							ResultLabel.Text = v.Idx
 							ResultLabel.TextColor3 = Color3.fromRGB(223, 223, 223)
-							ResultLabel.TextSize = 12
+							ResultLabel.TextSize = 11
 							ResultLabel.TextXAlignment = Enum.TextXAlignment.Left
 							ResultLabel.ZIndex = 153
 
@@ -9261,13 +9243,14 @@ function ModernV2:CreateWindow(Config)
 						end;
 					end;
 
+					local dropWidth = math.max(150, SearchFrame.AbsoluteSize.X)
 					if resultCount > 0 then
 						SearchDropdown.Visible = true
 						local height = math.min(resultCount * 27 + 4, 150)
-						ModernV2.PlayAnimate(SearchDropdown, SlowyTween, {Size = UDim2.new(0, 220, 0, height)})
+						ModernV2.PlayAnimate(SearchDropdown, SlowyTween, {Size = UDim2.new(0, dropWidth, 0, height)})
 					else
 						SearchDropdown.Visible = false
-						SearchDropdown.Size = UDim2.new(0, 220, 0, 0)
+						SearchDropdown.Size = UDim2.new(0, dropWidth, 0, 0)
 					end
 				end;
 			end);
@@ -9311,24 +9294,6 @@ function ModernV2:CreateWindow(Config)
 				searchClickConn = nil
 			end
 		end))
-
-		ModernV2:AddSignal(Input.MouseEnter:Connect(LPH_NO_VIRTUALIZE(function()
-			ModernV2.PlayAnimate(SearchIcon , SlowyTween , {
-				TextTransparency = 0.25
-			})
-		end)))
-
-		ModernV2:AddSignal(Input.MouseLeave:Connect(LPH_NO_VIRTUALIZE(function()
-			if Window.Searching then
-				ModernV2.PlayAnimate(SearchIcon , SlowyTween , {
-					TextTransparency = 0.25
-				})
-			else
-				ModernV2.PlayAnimate(SearchIcon , SlowyTween , {
-					TextTransparency = 0.45
-				})
-			end;
-		end)));
 	else
 		SearchFrame.Visible = false;
 	end;
