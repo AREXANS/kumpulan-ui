@@ -893,7 +893,7 @@ ModernV2:AddSignal(GlobalWindow.DescendantAdded:Connect(function(Object)
 	end);
 end));
 
-function ModernV2:AddQuery(ItemRoot, Name)
+function ModernV2:AddQuery(ItemRoot: Frame , Name : string)
 	local SectionOwner = nil;
 	local Parent = ItemRoot;
 
@@ -1601,7 +1601,7 @@ ModernV2.IsMouseOverFrame = LPH_NO_VIRTUALIZE(function(self , Frame)
 		return false;
 	end;
 
-	local AbsPos, AbsSize = Frame.AbsolutePosition, Frame.AbsoluteSize;
+	local AbsPos: Vector2, AbsSize: Vector2 = Frame.AbsolutePosition, Frame.AbsoluteSize;
 
 	if Mouse.X >= AbsPos.X and Mouse.X <= AbsPos.X + AbsSize.X and Mouse.Y >= AbsPos.Y and Mouse.Y <= AbsPos.Y + AbsSize.Y then
 		return true;
@@ -3095,7 +3095,7 @@ function ModernV2:NormalizeKeybindValue(K)
 	return tostring(K);
 end;
 
-function ModernV2:KeyCodeToStr(K)
+function ModernV2:KeyCodeToStr(K: Enum.KeyCode)
 	local KeyName = ModernV2:NormalizeKeybindValue(K);
 
 	if ModernV2.KeyEnum[KeyName] then
@@ -3105,7 +3105,7 @@ function ModernV2:KeyCodeToStr(K)
 	return KeyName;
 end;
 
-function ModernV2:StrToKeyCode(str)
+function ModernV2:StrToKeyCode(str: string)
 	str = ModernV2:NormalizeKeybindValue(str);
 
 	if ModernV2.EnumReverse[str] then
@@ -8141,7 +8141,6 @@ function ModernV2:CreateWindow(Config)
 	local SearchBox = Instance.new("TextBox")
 	local CloseButton = Instance.new("ImageLabel")
 	local TabContainer = Instance.new("Frame")
-	local ResizeButton = Instance.new("TextButton")
 
 	WindowFrame.Name = ModernV2.RandomString();
 	WindowFrame.Parent = ModernV2.ScreenGui;
@@ -8155,44 +8154,6 @@ function ModernV2:CreateWindow(Config)
 	WindowFrame.Size = Window.Size
 	WindowFrame.Active = true;
 	Window.Root = WindowFrame;
-
-	ResizeButton.Name = ModernV2.RandomString()
-	ResizeButton.Parent = WindowFrame
-	ResizeButton.AnchorPoint = Vector2.new(1, 1)
-	ResizeButton.Position = UDim2.new(1, 0, 1, 0)
-	ResizeButton.Size = UDim2.new(0, 15, 0, 15)
-	ResizeButton.BackgroundTransparency = 1
-	ResizeButton.Text = "◢"
-	ResizeButton.TextSize = 14
-	ResizeButton.TextColor3 = Color3.fromRGB(150, 150, 150)
-	ResizeButton.ZIndex = 999
-	
-	local DraggingResize = false
-	local DragStartResize = nil
-	local StartSizeResize = nil
-	
-	ModernV2:AddSignal(ResizeButton.InputBegan:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-			DraggingResize = true
-			DragStartResize = input.Position
-			StartSizeResize = WindowFrame.Size
-		end
-	end))
-	
-	ModernV2:AddSignal(UserInputService.InputChanged:Connect(function(input)
-		if DraggingResize and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-			local delta = input.Position - DragStartResize
-			local newWidth = math.max(StartSizeResize.X.Offset + delta.X, 400)
-			local newHeight = math.max(StartSizeResize.Y.Offset + delta.Y, 300)
-			WindowFrame.Size = UDim2.new(0, newWidth, 0, newHeight)
-		end
-	end))
-	
-	ModernV2:AddSignal(UserInputService.InputEnded:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-			DraggingResize = false
-		end
-	end))
 
 	if Window.Loadingscreen then
 		local LoadingOverlay = Instance.new("Frame")
@@ -8561,7 +8522,7 @@ function ModernV2:CreateWindow(Config)
 	HeadFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	HeadFrame.BorderSizePixel = 0
 	HeadFrame.ClipsDescendants = true
-	HeadFrame.Size = UDim2.new(1, 0, 0, 40)
+	HeadFrame.Size = UDim2.new(1, 0, 0, 50)
 	HeadFrame.ZIndex = 7
 
 	LogoImage.Name = ModernV2.RandomString();
@@ -8760,8 +8721,8 @@ function ModernV2:CreateWindow(Config)
 	LeftScrollingFrame.BackgroundTransparency = 1.000
 	LeftScrollingFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	LeftScrollingFrame.BorderSizePixel = 0
-	LeftScrollingFrame.Position = UDim2.new(0.5, 0, 0, 50)
-	LeftScrollingFrame.Size = UDim2.new(1, -10, 1, -95)
+	LeftScrollingFrame.Position = UDim2.new(0.5, 0, 0, 60)
+	LeftScrollingFrame.Size = UDim2.new(1, -10, 1, -115)
 	LeftScrollingFrame.ZIndex = 7
 	LeftScrollingFrame.ScrollBarThickness = 0
 
@@ -8782,7 +8743,7 @@ function ModernV2:CreateWindow(Config)
 	BottomFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	BottomFrame.BorderSizePixel = 0
 	BottomFrame.Position = UDim2.new(0, 0, 1, 0)
-	BottomFrame.Size = UDim2.new(1, 0, 0, 40)
+	BottomFrame.Size = UDim2.new(1, 0, 0, 50)
 	BottomFrame.ZIndex = 7
 
 	AccountProfile.Name = ModernV2.RandomString();
@@ -8909,7 +8870,7 @@ function ModernV2:CreateWindow(Config)
 	RightHeader.BackgroundTransparency = 1.000
 	RightHeader.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	RightHeader.BorderSizePixel = 0
-	RightHeader.Size = UDim2.new(1, 0, 0, 40)
+	RightHeader.Size = UDim2.new(1, 0, 0, 50)
 	RightHeader.ZIndex = 9
 
 	LineFrame_3.Name = ModernV2.RandomString();
@@ -8930,8 +8891,8 @@ function ModernV2:CreateWindow(Config)
 	ConfigFrame.BackgroundTransparency = 0.750
 	ConfigFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	ConfigFrame.BorderSizePixel = 0
-	ConfigFrame.Position = UDim2.new(0, 5, 0.5, 0)
-	ConfigFrame.Size = UDim2.new(0, 100, 0, 26)
+	ConfigFrame.Position = UDim2.new(0, 10, 0.5, 0)
+	ConfigFrame.Size = UDim2.new(0, 115, 0, 30)
 	ConfigFrame.ZIndex = 9
 
 	UIStroke_2.Transparency = 0.650
@@ -8999,25 +8960,15 @@ function ModernV2:CreateWindow(Config)
 
 	SearchFrame.Name = ModernV2.RandomString();
 	SearchFrame.Parent = RightHeader
-	SearchFrame.AnchorPoint = Vector2.new(0, 0.5)
+	SearchFrame.AnchorPoint = Vector2.new(1, 0.5)
 	SearchFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	SearchFrame.BackgroundTransparency = 0
+	SearchFrame.BackgroundTransparency = 1.000
 	SearchFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	SearchFrame.BorderSizePixel = 0
 	SearchFrame.ClipsDescendants = true
-	SearchFrame.Position = UDim2.new(0, 110, 0.5, 0)
-	SearchFrame.Size = UDim2.new(1, -150, 0, 26)
-	SearchFrame.ZIndex = 50
-	SearchFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-
-	local SearchCorner = Instance.new("UICorner")
-	SearchCorner.CornerRadius = UDim.new(0, 6)
-	SearchCorner.Parent = SearchFrame
-
-	local SearchStroke = Instance.new("UIStroke")
-	SearchStroke.Color = Color3.fromRGB(150, 150, 150)
-	SearchStroke.Thickness = 1
-	SearchStroke.Parent = SearchFrame
+	SearchFrame.Position = UDim2.new(1, -45, 0.5, 0)
+	SearchFrame.Size = UDim2.new(0, 30, 0, 30)
+	SearchFrame.ZIndex = 12
 
 	SearchIcon.Name = ModernV2.RandomString();
 	SearchIcon.Parent = SearchFrame
@@ -9026,8 +8977,8 @@ function ModernV2:CreateWindow(Config)
 	SearchIcon.BackgroundTransparency = 1.000
 	SearchIcon.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	SearchIcon.BorderSizePixel = 0
-	SearchIcon.Position = UDim2.new(0, 5, 0.5, 0)
-	SearchIcon.Size = UDim2.new(0, 20, 0, 20)
+	SearchIcon.Position = UDim2.new(0, 2, 0.5, 0)
+	SearchIcon.Size = UDim2.new(0, 25, 0, 25)
 	SearchIcon.ZIndex = 12
 	ModernV2:SetIconMode(SearchIcon, "magnifying-glass")
 	SearchIcon.ImageColor3 = Color3.fromRGB(223, 223, 223)
@@ -9042,7 +8993,7 @@ function ModernV2:CreateWindow(Config)
 	SearchBox.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	SearchBox.BorderSizePixel = 0
 	SearchBox.Position = UDim2.new(0, 35, 0.5, 0)
-	SearchBox.Size = UDim2.new(1, -40, 1, 0)
+	SearchBox.Size = UDim2.new(1, -35, 0, 25)
 	SearchBox.ZIndex = 12
 	SearchBox.ClearTextOnFocus = false
 	SearchBox.Font = Enum.Font.GothamBold
@@ -9050,7 +9001,7 @@ function ModernV2:CreateWindow(Config)
 	SearchBox.Text = ""
 	SearchBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 	SearchBox.TextSize = 13.000
-	SearchBox.TextTransparency = 0
+	SearchBox.TextTransparency = 1
 	SearchBox.TextXAlignment = Enum.TextXAlignment.Left
 
 	CloseButton.Name = ModernV2.RandomString();
@@ -9075,10 +9026,128 @@ function ModernV2:CreateWindow(Config)
 	TabContainer.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	TabContainer.BorderSizePixel = 0
 	TabContainer.ClipsDescendants = true
-	TabContainer.Position = UDim2.new(0, 0, 0, 40)
-	TabContainer.Size = UDim2.new(1, 0, 1, -40)
+	TabContainer.Position = UDim2.new(0, 0, 0, 50)
+	TabContainer.Size = UDim2.new(1, 0, 1, -50)
 	TabContainer.ZIndex = 5
 
+	if Window.SearchEnabled then
+		Window.Searching = false;
+		local Input = ModernV2:CreateInput(SearchIcon , LPH_NO_VIRTUALIZE(function()
+			Window.Searching = not Window.Searching;
+
+			if Window.Searching then
+				ModernV2.PlayAnimate(SearchFrame , VSlowTween , {
+					Size = UDim2.new(0, 220, 0, 30)
+				})
+
+				ModernV2.PlayAnimate(SearchIcon , SlowyTween , {
+					TextTransparency = 0.25
+				})
+
+				ModernV2.PlayAnimate(SearchBox , VSlowTween , {
+					TextTransparency = 0.350
+				})
+			else
+				ModernV2.PlayAnimate(SearchFrame , VSlowTween , {
+					Size = UDim2.new(0, 30, 0, 30)
+				})
+
+				ModernV2.PlayAnimate(SearchIcon , SlowyTween , {
+					TextTransparency = 0.45
+				})
+
+				ModernV2.PlayAnimate(SearchBox , SlowyTween , {
+					TextTransparency = 1
+				})
+
+				SearchBox.Text = "";
+			end;
+		end));	
+
+		local wati_for_finish = tick();
+		local last_thread;
+		local max_time = 0.2;
+
+		ModernV2:AddSignal(SearchBox:GetPropertyChangedSignal('Text'):Connect(LPH_NO_VIRTUALIZE(function()
+			if not SearchBox.Text:byte() then
+				for i,v in next , ModernV2.NameRegisitry do
+					v.Root.Visible = true;
+				end;
+
+				return;	
+			end;
+
+			wati_for_finish = tick();
+
+			if last_thread then
+				task.cancel(last_thread);
+				last_thread = nil;
+			end;
+
+			last_thread = task.delay(max_time,function()
+				if SearchBox.Text:byte() and (tick() - wati_for_finish) > max_time then
+					local RevealedMatch = false;
+
+					for i,v in next , ModernV2.NameRegisitry do
+						if string.find(string.lower(v.Idx) , string.lower(SearchBox.Text), 1, true) then
+							v.Root.Visible = true;
+
+							if not RevealedMatch then
+								RevealedMatch = true;
+								ModernV2:RevealQueryItem(v);
+							end;
+						else
+							v.Root.Visible = false;
+						end;
+					end;
+				end;
+			end);
+		end)));
+
+		ModernV2:AddSignal(Input.MouseEnter:Connect(LPH_NO_VIRTUALIZE(function()
+			ModernV2.PlayAnimate(SearchIcon , SlowyTween , {
+				TextTransparency = 0.25
+			})
+		end)))
+
+		ModernV2:AddSignal(Input.MouseLeave:Connect(LPH_NO_VIRTUALIZE(function()
+			if Window.Searching then
+				ModernV2.PlayAnimate(SearchIcon , SlowyTween , {
+					TextTransparency = 0.25
+				})
+			else
+				ModernV2.PlayAnimate(SearchIcon , SlowyTween , {
+					TextTransparency = 0.45
+				})
+			end;
+		end)));
+	else
+		SearchFrame.Visible = false;
+	end;
+
+	do
+		local Input = ModernV2:CreateInput(CloseButton , LPH_NO_VIRTUALIZE(function()
+			Window:Dialog({
+				Title = "Destroy Window?",
+				Content = "Are you sure you want to destroy this window?",
+				Buttons = {
+					{
+						Text = "Cancel",
+						ReturnValue = false,
+					},
+					{
+						Text = "Yes",
+						Primary = true,
+						ReturnValue = true,
+					},
+				},
+				Callback = function(result)
+					if result == true then
+						Window:Destroy();
+					end;
+				end,
+			});
+		end));
 
 		ModernV2:AddSignal(Input.MouseEnter:Connect(LPH_NO_VIRTUALIZE(function()
 			ModernV2.PlayAnimate(CloseButton , SlowyTween , {
