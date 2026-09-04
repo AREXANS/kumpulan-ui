@@ -10123,17 +10123,17 @@ function ModernV2:CreateWindow(Config)
 				ColorSequenceKeypoint.new(1, Color3.fromRGB(13, 17, 22)),
 			});
 			DiscordGradient.Parent = DiscordCard;
-			local DiscordTitle = MakeText(DiscordCard, "Discord", 20, true, 0);
+			local DiscordTitle = MakeText(DiscordCard, "WhatsApp", 20, true, 0);
 			DiscordTitle.Position = UDim2.fromOffset(18, 12);
 			DiscordTitle.Size = UDim2.new(1, -36, 0, 25);
-			local DiscordSub = MakeText(DiscordCard, tostring(Config.DiscordInvite or "") ~= "" and "Tap to copy Discord invite" or "No Discord invite configured", 12, false, 0.250);
+			local DiscordSub = MakeText(DiscordCard, tostring(Config.DiscordInvite or "") ~= "" and "Tap to copy WhatsApp invite" or "No WhatsApp invite configured", 12, false, 0.250);
 			DiscordSub.Position = UDim2.fromOffset(18, 38);
 			DiscordSub.Size = UDim2.new(1, -36, 0, 18);
 			ModernV2:CreateInput(DiscordCard, function()
 				if tostring(Config.DiscordInvite or "") == "" then
 					return;
 				end;
-				local Link = "https://discord.gg/"..tostring(Config.DiscordInvite);
+				local Link = "https://chat.whatsapp.com/JyEGFJCvxfCFRY04m1lYQf?s=cl&p=a&mlu=4&ilr=4";
 				if setclipboard then setclipboard(Link); elseif toclipboard then toclipboard(Link); elseif set_clipboard then set_clipboard(Link); end;
 				Window:Notify({ Title = "Copied", Content = Link, Duration = 2, Icon = "lucide:check" });
 			end);
@@ -10449,10 +10449,10 @@ function ModernV2:CreateWindow(Config)
 
 			if tostring(Config.DiscordInvite or "") ~= "" then
 				ServerSection:AddButton({
-					Name = "Copy Discord",
+					Name = "Copy WhatsApp",
 					Icon = "lucide:message-circle",
 					Callback = function()
-						local Link = "https://discord.gg/"..tostring(Config.DiscordInvite);
+						local Link = "https://chat.whatsapp.com/JyEGFJCvxfCFRY04m1lYQf?s=cl&p=a&mlu=4&ilr=4";
 
 						if setclipboard then
 							setclipboard(Link);
