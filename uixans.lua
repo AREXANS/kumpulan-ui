@@ -9064,16 +9064,71 @@ function ModernV2:CreateWindow(Config)
 			end;
 		end));	
 
+		
+		local SearchDropdown = Instance.new("Frame")
+		local SearchDropdownCorner = Instance.new("UICorner")
+		local SearchDropdownStroke = Instance.new("UIStroke")
+		local SearchDropdownScroll = Instance.new("ScrollingFrame")
+		local SearchDropdownLayout = Instance.new("UIListLayout")
+
+		SearchDropdown.Name = ModernV2.RandomString()
+		SearchDropdown.Parent = ModernV2.ScreenGui
+		SearchDropdown.BackgroundColor3 = Color3.fromRGB(20, 22, 27)
+		SearchDropdown.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		SearchDropdown.BorderSizePixel = 0
+		SearchDropdown.ClipsDescendants = true
+		SearchDropdown.Size = UDim2.new(0, 220, 0, 0)
+		SearchDropdown.ZIndex = 150
+		SearchDropdown.Visible = false
+
+		SearchDropdownCorner.CornerRadius = UDim.new(0, 6)
+		SearchDropdownCorner.Parent = SearchDropdown
+
+		SearchDropdownStroke.Color = Color3.fromRGB(45, 48, 58)
+		SearchDropdownStroke.Parent = SearchDropdown
+
+		SearchDropdownScroll.Name = "Scroll"
+		SearchDropdownScroll.Parent = SearchDropdown
+		SearchDropdownScroll.Active = true
+		SearchDropdownScroll.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		SearchDropdownScroll.BackgroundTransparency = 1.000
+		SearchDropdownScroll.BorderSizePixel = 0
+		SearchDropdownScroll.Size = UDim2.new(1, -4, 1, -4)
+		SearchDropdownScroll.Position = UDim2.new(0, 2, 0, 2)
+		SearchDropdownScroll.ScrollBarThickness = 2
+		SearchDropdownScroll.ZIndex = 151
+
+		SearchDropdownLayout.Parent = SearchDropdownScroll
+		SearchDropdownLayout.SortOrder = Enum.SortOrder.LayoutOrder
+		SearchDropdownLayout.Padding = UDim.new(0, 2)
+
+		ModernV2:AddSignal(SearchDropdownLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+			SearchDropdownScroll.CanvasSize = UDim2.new(0, 0, 0, SearchDropdownLayout.AbsoluteContentSize.Y)
+		end))
+
+		local function updateSearchDropdownPos()
+			if SearchDropdown.Visible then
+				SearchDropdown.Position = UDim2.new(0, SearchFrame.AbsolutePosition.X - (220 - SearchFrame.AbsoluteSize.X), 0, SearchFrame.AbsolutePosition.Y + 35)
+			end
+		end
+
+		ModernV2:AddSignal(RunService.RenderStepped:Connect(updateSearchDropdownPos))
+
 		local wati_for_finish = tick();
 		local last_thread;
 		local max_time = 0.2;
 
 		ModernV2:AddSignal(SearchBox:GetPropertyChangedSignal('Text'):Connect(LPH_NO_VIRTUALIZE(function()
+			for _, child in ipairs(SearchDropdownScroll:GetChildren()) do
+				if child:IsA("Frame") then child:Destroy() end
+			end
+
 			if not SearchBox.Text:byte() then
+				SearchDropdown.Visible = false
+				SearchDropdown.Size = UDim2.new(0, 220, 0, 0)
 				for i,v in next , ModernV2.NameRegisitry do
 					v.Root.Visible = true;
 				end;
-
 				return;	
 			end;
 
@@ -9087,22 +9142,175 @@ function ModernV2:CreateWindow(Config)
 			last_thread = task.delay(max_time,function()
 				if SearchBox.Text:byte() and (tick() - wati_for_finish) > max_time then
 					local RevealedMatch = false;
+					local resultCount = 0
 
 					for i,v in next , ModernV2.NameRegisitry do
 						if string.find(string.lower(v.Idx) , string.lower(SearchBox.Text), 1, true) then
-							v.Root.Visible = true;
+							resultCount = resultCount + 1
 
-							if not RevealedMatch then
-								RevealedMatch = true;
-								ModernV2:RevealQueryItem(v);
-							end;
+							local ResultItem = Instance.new("Frame")
+							local ResultCorner = Instance.new("UICorner")
+							local ResultLabel = Instance.new("TextLabel")
+							local ResultButton = Instance.new("TextButton")
+
+							ResultItem.Name = ModernV2.RandomString()
+							ResultItem.Parent = SearchDropdownScroll
+							ResultItem.BackgroundColor3 = Color3.fromRGB(35, 38, 45)
+							ResultItem.BackgroundTransparency = 0.5
+							ResultItem.BorderSizePixel = 0
+							ResultItem.Size = UDim2.new(1, 0, 0, 25)
+							ResultItem.ZIndex = 152
+
+							ResultCorner.CornerRadius = UDim.new(0, 4)
+							ResultCorner.Parent = ResultItem
+
+							ResultLabel.Name = "Label"
+							ResultLabel.Parent = ResultItem
+							ResultLabel.BackgroundTransparency = 1
+							ResultLabel.Position = UDim2.new(0, 8, 0, 0)
+							ResultLabel.Size = UDim2.new(1, -16, 1, 0)
+							ResultLabel.Font = Enum.Font.GothamBold
+							ResultLabel.Text = v.Idx
+							ResultLabel.TextColor3 = Color3.fromRGB(223, 223, 223)
+							ResultLabel.TextSize = 12
+							ResultLabel.TextXAlignment = Enum.TextXAlignment.Left
+							ResultLabel.ZIndex = 153
+
+							ResultButton.Name = "Button"
+							ResultButton.Parent = ResultItem
+							ResultButton.BackgroundTransparency = 1
+							ResultButton.Size = UDim2.new(1, 0, 1, 0)
+							ResultButton.Text = ""
+							ResultButton.ZIndex = 154
+
+							ModernV2:AddSignal(ResultButton.MouseEnter:Connect(function()
+								ModernV2.PlayAnimate(ResultItem, SlowyTween, {BackgroundTransparency = 0})
+								ModernV2.PlayAnimate(ResultLabel, SlowyTween, {TextColor3 = Color3.fromRGB(255, 255, 255)})
+							end))
+
+							ModernV2:AddSignal(ResultButton.MouseLeave:Connect(function()
+								ModernV2.PlayAnimate(ResultItem, SlowyTween, {BackgroundTransparency = 0.5})
+								ModernV2.PlayAnimate(ResultLabel, SlowyTween, {TextColor3 = Color3.fromRGB(223, 223, 223)})
+							end))
+
+							ModernV2:AddSignal(ResultButton.MouseButton1Click:Connect(function()
+								-- Find if the item belongs to UserSettings or a normal tab
+								local isUserSettings = false
+								local parent = v.Root
+								while parent do
+									if parent == Window.UserSettings.Root then
+										isUserSettings = true
+										break
+									end
+									parent = parent.Parent
+								end
+
+								if isUserSettings then
+									Window.UserSettings.Signal:SetValue(true)
+								else
+									if v.Section then
+										-- Find the tab this section belongs to
+										local tabFound = nil
+										for _, tab in ipairs(Window.Tabs) do
+											local currentParent = v.Root
+											while currentParent do
+												if currentParent == tab.Root then
+													tabFound = tab
+													break
+												end
+												currentParent = currentParent.Parent
+											end
+											if tabFound then break end
+										end
+
+										if tabFound then
+											tabFound:Select()
+										end
+									end
+								end
+
+								ModernV2:RevealQueryItem(v)
+
+								-- Highlight the item briefly
+								local highlightStroke = Instance.new("UIStroke")
+								highlightStroke.Color = ModernV2.AccentColor
+								highlightStroke.Thickness = 2
+								highlightStroke.Transparency = 0
+								highlightStroke.Parent = v.Root
+
+								task.delay(1, function()
+									ModernV2.PlayAnimate(highlightStroke, SlowyTween, {Transparency = 1})
+									task.delay(0.2, function()
+										highlightStroke:Destroy()
+									end)
+								end)
+
+								-- Close search
+								SearchDropdown.Visible = false
+								SearchBox.Text = ""
+								SearchBox:ReleaseFocus()
+								if searchClickConn then
+									searchClickConn:Disconnect()
+									searchClickConn = nil
+								end
+							end))
+
+							v.Root.Visible = true;
 						else
-							v.Root.Visible = false;
+							v.Root.Visible = true; -- Keep items visible in the background
 						end;
 					end;
+
+					if resultCount > 0 then
+						SearchDropdown.Visible = true
+						local height = math.min(resultCount * 27 + 4, 150)
+						ModernV2.PlayAnimate(SearchDropdown, SlowyTween, {Size = UDim2.new(0, 220, 0, height)})
+					else
+						SearchDropdown.Visible = false
+						SearchDropdown.Size = UDim2.new(0, 220, 0, 0)
+					end
 				end;
 			end);
 		end)));
+
+		-- Close dropdown when clicking outside
+		local searchClickConn
+		ModernV2:AddSignal(SearchBox.Focused:Connect(function()
+			if searchClickConn then searchClickConn:Disconnect() end
+			searchClickConn = UserInputService.InputBegan:Connect(function(input)
+				if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+					if SearchDropdown.Visible then
+						local mouseX, mouseY = input.Position.X, input.Position.Y
+						
+						local dropPos = SearchDropdown.AbsolutePosition
+						local dropSize = SearchDropdown.AbsoluteSize
+						local searchPos = SearchFrame.AbsolutePosition
+						local searchSize = SearchFrame.AbsoluteSize
+
+						local inDrop = mouseX >= dropPos.X and mouseX <= dropPos.X + dropSize.X and mouseY >= dropPos.Y and mouseY <= dropPos.Y + dropSize.Y
+						local inSearch = mouseX >= searchPos.X and mouseX <= searchPos.X + searchSize.X and mouseY >= searchPos.Y and mouseY <= searchPos.Y + searchSize.Y
+
+						if not inDrop and not inSearch then
+							SearchDropdown.Visible = false
+							if searchClickConn then
+								searchClickConn:Disconnect()
+								searchClickConn = nil
+							end
+						end
+					end
+				end
+			end)
+		end))
+		
+		ModernV2:AddSignal(SearchBox.FocusLost:Connect(function(enterPressed)
+			if enterPressed then
+				SearchDropdown.Visible = false
+			end
+			if searchClickConn then
+				searchClickConn:Disconnect()
+				searchClickConn = nil
+			end
+		end))
 
 		ModernV2:AddSignal(Input.MouseEnter:Connect(LPH_NO_VIRTUALIZE(function()
 			ModernV2.PlayAnimate(SearchIcon , SlowyTween , {
