@@ -546,6 +546,7 @@ function ModernV2:CreateMenuIcon(Config)
 	IconRoot.Position         = UDim2.new(1, -15, 0, 15);
 	IconRoot.ZIndex           = 20;
 	IconRoot.ClipsDescendants = false;
+	IconRoot.Active           = true;
 
 	local UICornerIcon = Instance.new("UICorner");
 	UICornerIcon.CornerRadius = cornerRadius;
