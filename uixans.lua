@@ -523,7 +523,7 @@ function ModernV2:CreateMenuIcon(Config)
 	Config = Config or {};
 
 	-- ── Defaults ──────────────────────────────────────────────────
-	local iconSize       = Config.Size         or 48;
+	local iconSize       = Config.Size         or 36;
 	local iconImage      = Config.Image        or "";          -- rbxassetid:// OR lucide name OR URL
 	local iconScale      = tonumber(Config.IconScale or Config.Scale) or 1;
 	local iconColor      = Config.IconColor    or Color3.fromRGB(255,255,255);
@@ -537,13 +537,13 @@ function ModernV2:CreateMenuIcon(Config)
 	local IconRoot = Instance.new("Frame");
 	IconRoot.Name             = ModernV2.RandomString();
 	IconRoot.Parent           = ModernV2.ScreenGui;
-	-- center-left: X = 15px from left, Y = 50 % of screen
-	IconRoot.AnchorPoint      = Vector2.new(0, 0.5);
+	-- top-right: X = 15px from right, Y = 15px from top
+	IconRoot.AnchorPoint      = Vector2.new(1, 0);
 	IconRoot.BackgroundColor3 = bgColor;
 	IconRoot.BackgroundTransparency = 1;   -- start invisible
 	IconRoot.BorderSizePixel  = 0;
 	IconRoot.Size             = UDim2.fromOffset(iconSize, iconSize);
-	IconRoot.Position         = UDim2.new(0, 15, 0.5, 0);
+	IconRoot.Position         = UDim2.new(1, -15, 0, 15);
 	IconRoot.ZIndex           = 20;
 	IconRoot.ClipsDescendants = false;
 
@@ -628,11 +628,11 @@ function ModernV2:CreateMenuIcon(Config)
 		local IconFallbackText = IconImage:FindFirstChild("ModernIconFallbackText");
 
 		if val then
-			-- Bounce-in from left
-			IconRoot.Position = UDim2.new(0, -iconSize, 0.5, 0);
+			-- Bounce-in from right
+			IconRoot.Position = UDim2.new(1, iconSize, 0, 15);
 			ModernV2.PlayAnimate(IconRoot, VSlowTween, {
 				BackgroundTransparency = 0,
-				Position = UDim2.new(0, 15, 0.5, 0),
+				Position = UDim2.new(1, -15, 0, 15),
 			});
 			ModernV2.PlayAnimate(UIStrokeIcon, SlowyTween, {
 				Transparency = 0.25,
@@ -650,10 +650,10 @@ function ModernV2:CreateMenuIcon(Config)
 			end;
 			IconShadow:Render(true);
 		else
-			-- Slide out to the left
+			-- Slide out to the right
 			ModernV2.PlayAnimate(IconRoot, VSlowTween, {
 				BackgroundTransparency = 1,
-				Position = UDim2.new(0, -iconSize - 10, 0.5, 0),
+				Position = UDim2.new(1, iconSize + 10, 0, 15),
 			});
 			ModernV2.PlayAnimate(UIStrokeIcon, SlowyTween, {
 				Transparency = 1,
@@ -770,8 +770,8 @@ function ModernV2:CreateMenuIcon(Config)
 		local function clampPosition(pos)
 			local screenSize = ModernV2.ScreenGui.AbsoluteSize;
 			local sz2 = MenuIconLib._size;
-			local nx = math.clamp(pos.X.Offset, 0, screenSize.X - sz2);
-			local ny = math.clamp(pos.Y.Scale * screenSize.Y + pos.Y.Offset, sz2/2, screenSize.Y - sz2/2);
+			local nx = math.clamp(pos.X.Scale * screenSize.X + pos.X.Offset, sz2, screenSize.X);
+			local ny = math.clamp(pos.Y.Scale * screenSize.Y + pos.Y.Offset, 0, screenSize.Y - sz2);
 			return UDim2.new(0, nx, 0, ny);
 		end;
 
@@ -12256,6 +12256,23 @@ function ModernV2:CreateWindow(Config)
 				end;
 				
 				cd += 1;
+			end;
+
+			for Flag,v in next, ModernV2.PendingFlagValues do
+				local alreadySet = false;
+				for _, entry in next, ikc do
+					if entry.Idx == Flag then
+						alreadySet = true;
+						break;
+					end
+				end
+				if not alreadySet then
+					if typeof(v) == 'Color3' then
+						table.insert(ikc, { Idx = Flag, Value = v:ToHex() });
+					else
+						table.insert(ikc, { Idx = Flag, Value = v });
+					end
+				end
 			end;
 
 			local JsonData = HttpService:JSONEncode(ikc);
