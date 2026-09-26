@@ -598,6 +598,32 @@ function ModernV2:CreateMenuIcon(Config)
 	-- Shadow behind icon
 	local IconShadow = ModernV2:CreateShadow(IconRoot, true);
 
+	-- ── Lock Toggle (Mini icon) ───────────────────────────────────
+	local LockToggle = Instance.new("ImageLabel");
+	LockToggle.Name = ModernV2.RandomString();
+	LockToggle.Parent = IconRoot;
+	LockToggle.AnchorPoint = Vector2.new(1, 1);
+	LockToggle.BackgroundTransparency = 1;
+	LockToggle.BorderSizePixel = 0;
+	LockToggle.Position = UDim2.new(1, 2, 1, 2);
+	LockToggle.Size = UDim2.fromOffset(14, 14);
+	LockToggle.ZIndex = 25;
+	LockToggle.ImageColor3 = iconColor;
+	LockToggle.ImageTransparency = 1;
+	LockToggle.ScaleType = Enum.ScaleType.Fit;
+	ModernV2:SetIconMode(LockToggle, draggable and "lucide:unlock" or "lucide:lock");
+
+	local LockToggleBtn = Instance.new("TextButton");
+	LockToggleBtn.Name = ModernV2.RandomString();
+	LockToggleBtn.Parent = LockToggle;
+	LockToggleBtn.BackgroundTransparency = 1;
+	LockToggleBtn.BorderSizePixel = 0;
+	LockToggleBtn.Size = UDim2.fromScale(1.5, 1.5);
+	LockToggleBtn.AnchorPoint = Vector2.new(0.5, 0.5);
+	LockToggleBtn.Position = UDim2.fromScale(0.5, 0.5);
+	LockToggleBtn.Text = "";
+	LockToggleBtn.ZIndex = 26;
+
 	-- ── Internal state ────────────────────────────────────────────
 	local MenuIconLib = {
 		Root         = IconRoot,
@@ -605,6 +631,10 @@ function ModernV2:CreateMenuIcon(Config)
 		_size        = iconSize,
 		_draggable   = draggable,
 	};
+
+	ModernV2:AddSignal(LockToggleBtn.MouseButton1Click:Connect(function()
+		MenuIconLib:SetDraggable(not MenuIconLib._draggable);
+	end));
 
 	-- ── Helpers ───────────────────────────────────────────────────
 	local function _applyIcon(src)
@@ -649,6 +679,9 @@ function ModernV2:CreateMenuIcon(Config)
 					TextTransparency = 0,
 				});
 			end;
+			ModernV2.PlayAnimate(LockToggle, VSlowTween, {
+				ImageTransparency = 0,
+			});
 			IconShadow:Render(true);
 		else
 			-- Slide out to the right
@@ -670,6 +703,9 @@ function ModernV2:CreateMenuIcon(Config)
 					TextTransparency = 1,
 				});
 			end;
+			ModernV2.PlayAnimate(LockToggle, SlowyTween, {
+				ImageTransparency = 1,
+			});
 			IconShadow:Render(false);
 		end;
 	end;
@@ -705,6 +741,7 @@ function ModernV2:CreateMenuIcon(Config)
 		iconColor = c3;
 		IconLabel.TextColor3  = c3;
 		IconImage.ImageColor3 = c3;
+		LockToggle.ImageColor3 = c3;
 	end;
 
 	--- Change background colour
@@ -734,6 +771,7 @@ function ModernV2:CreateMenuIcon(Config)
 	--- Enable / disable drag
 	function MenuIconLib:SetDraggable(enabled)
 		MenuIconLib._draggable = enabled;
+		ModernV2:SetIconMode(LockToggle, enabled and "lucide:unlock" or "lucide:lock");
 	end;
 
 	--- React to window toggle (pass true = UI is now visible, false = hidden)
@@ -783,6 +821,7 @@ function ModernV2:CreateMenuIcon(Config)
 			local DRAG_THRESHOLD = 6; -- pixels of movement before it counts as a drag
 
 			ModernV2:AddSignal(IconRoot.InputBegan:Connect(function(input)
+				if ModernV2:IsMouseOverFrame(LockToggle) then return end;
 				if input.UserInputType ~= Enum.UserInputType.MouseButton1
 				and input.UserInputType ~= Enum.UserInputType.Touch then
 					return;
