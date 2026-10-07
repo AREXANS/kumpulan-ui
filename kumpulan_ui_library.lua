@@ -379,6 +379,8 @@ function UI:CreateWindow(config)
     root.Size = UDim2.fromOffset(0, 0)
     root.BackgroundTransparency = 1
     root.Image = GetImage("background_ui.png")
+    root.ScaleType = Enum.ScaleType.Slice
+    root.SliceCenter = Rect.new(12, 12, 12, 12)
     root.BackgroundColor3 = self.Theme.Background
     root.BorderSizePixel = 0
     root.ClipsDescendants = true
@@ -400,6 +402,8 @@ function UI:CreateWindow(config)
     sidebar.Name = "Sidebar"
     sidebar.BackgroundTransparency = 1
     sidebar.Image = GetImage("frame_and_Background.png")
+    sidebar.ScaleType = Enum.ScaleType.Slice
+    sidebar.SliceCenter = Rect.new(12, 12, 12, 12)
     sidebar.BorderSizePixel = 0
     sidebar.Size = UDim2.new(0, 190, 1, 0)
     sidebar.Parent = root
@@ -408,6 +412,8 @@ function UI:CreateWindow(config)
     local profileFrame = Instance.new("ImageLabel")
     profileFrame.BackgroundTransparency = 1
     profileFrame.Image = GetImage("frame_profile.png")
+    profileFrame.ScaleType = Enum.ScaleType.Slice
+    profileFrame.SliceCenter = Rect.new(12, 12, 12, 12)
     profileFrame.Size = UDim2.fromOffset(160, 45)
     profileFrame.Position = UDim2.new(0, 15, 1, -60)
     profileFrame.Parent = sidebar
@@ -415,6 +421,8 @@ function UI:CreateWindow(config)
     local profileIcon = Instance.new("ImageLabel")
     profileIcon.BackgroundTransparency = 1
     profileIcon.Image = GetImage("humanoid.png")
+    profileIcon.ScaleType = Enum.ScaleType.Slice
+    profileIcon.SliceCenter = Rect.new(12, 12, 12, 12)
     profileIcon.Size = UDim2.fromOffset(30, 30)
     profileIcon.Position = UDim2.fromOffset(8, 7)
     profileIcon.Parent = profileFrame
@@ -436,6 +444,8 @@ function UI:CreateWindow(config)
     local brandMark = Instance.new("ImageLabel")
     brandMark.BackgroundTransparency = 1
     brandMark.Image = GetImage("icon.png")
+    brandMark.ScaleType = Enum.ScaleType.Slice
+    brandMark.SliceCenter = Rect.new(12, 12, 12, 12)
     brandMark.Size = UDim2.fromOffset(32, 32)
     brandMark.Position = UDim2.fromOffset(0, 2)
     brandMark.Parent = brand
@@ -472,6 +482,8 @@ function UI:CreateWindow(config)
     local searchIcon = Instance.new("ImageLabel", searchFrame)
     searchIcon.BackgroundTransparency = 1
     searchIcon.Image = GetImage("search.png")
+    searchIcon.ScaleType = Enum.ScaleType.Slice
+    searchIcon.SliceCenter = Rect.new(12, 12, 12, 12)
     searchIcon.Position = UDim2.fromOffset(5, 0)
     searchIcon.Size = UDim2.fromOffset(22, 29)
 
@@ -619,6 +631,8 @@ function UI:CreateWindow(config)
     local function refreshTheme()
         root.BackgroundTransparency = 1
     root.Image = GetImage("background_ui.png")
+    root.ScaleType = Enum.ScaleType.Slice
+    root.SliceCenter = Rect.new(12, 12, 12, 12)
     root.BackgroundColor3 = self.Theme.Background
         -- sidebar uses image
         header.BackgroundColor3 = self.Theme.Surface
@@ -631,6 +645,8 @@ function UI:CreateWindow(config)
         contentScroll.ScrollBarImageColor3 = self.Theme.Accent
         brandMark.BackgroundTransparency = 1
         brandMark.Image = GetImage("icon.png")
+        brandMark.ScaleType = Enum.ScaleType.Slice
+        brandMark.SliceCenter = Rect.new(12, 12, 12, 12)
         headerTitle.TextColor3 = self.Theme.Text
         headerSub.TextColor3 = self.Theme.Muted
         brandTitle.TextColor3 = self.Theme.Text
@@ -672,7 +688,7 @@ function UI:CreateWindow(config)
         else
             root.Visible = true
             root.BackgroundTransparency = 0
-            tween(root, 0.18, {Size = size, BackgroundTransparency = 0})
+            tween(root, 0.18, {Size = size, BackgroundTransparency = 1})
         end
         return self
     end
@@ -724,6 +740,8 @@ function UI:CreateWindow(config)
         local button = Instance.new("ImageLabel")
         button.BackgroundTransparency = 1
         button.Image = GetImage("button1.png")
+        button.ScaleType = Enum.ScaleType.Slice
+        button.SliceCenter = Rect.new(12, 12, 12, 12)
         button.BorderSizePixel = 0
         button.Size = UDim2.new(1, 0, 0, 35)
         button.Parent = tabScroll
@@ -753,11 +771,15 @@ function UI:CreateWindow(config)
         click.MouseEnter:Connect(function()
             if self.ActiveTab ~= Tab then
                 button.Image = GetImage("button2.png")
+                button.ScaleType = Enum.ScaleType.Slice
+                button.SliceCenter = Rect.new(12, 12, 12, 12)
             end
         end)
         click.MouseLeave:Connect(function()
             if self.ActiveTab ~= Tab then
                 button.Image = GetImage("button1.png")
+                button.ScaleType = Enum.ScaleType.Slice
+                button.SliceCenter = Rect.new(12, 12, 12, 12)
             end
         end)
 
@@ -832,6 +854,8 @@ function UI:CreateWindow(config)
             local frame = Instance.new("ImageLabel")
             frame.BackgroundTransparency = 1
             frame.Image = GetImage("frame_ui.png")
+            frame.ScaleType = Enum.ScaleType.Slice
+            frame.SliceCenter = Rect.new(12, 12, 12, 12)
             frame.BorderSizePixel = 0
             frame.AutomaticSize = Enum.AutomaticSize.Y
             frame.Size = UDim2.new(1, 0, 0, 0)
@@ -939,6 +963,8 @@ function UI:CreateWindow(config)
                 local row = Instance.new("ImageLabel")
                 row.BackgroundTransparency = 1
                 row.Image = GetImage("button1.png")
+                row.ScaleType = Enum.ScaleType.Slice
+                row.SliceCenter = Rect.new(12, 12, 12, 12)
                 row.BorderSizePixel = 0
                 row.Size = UDim2.new(1, 0, 0, 36)
                 row.Parent = holder
@@ -957,11 +983,15 @@ function UI:CreateWindow(config)
                 local click = inputButton(row)
                 click.MouseEnter:Connect(function()
                     row.Image = GetImage("button2.png")
+                    row.ScaleType = Enum.ScaleType.Slice
+                    row.SliceCenter = Rect.new(12, 12, 12, 12)
                     tween(rs, 0.12, {Transparency = 0.25})
                     tween(arrow, 0.12, {TextColor3 = UI.Theme.Accent})
                 end)
                 click.MouseLeave:Connect(function()
                     row.Image = GetImage("button1.png")
+                    row.ScaleType = Enum.ScaleType.Slice
+                    row.SliceCenter = Rect.new(12, 12, 12, 12)
                     tween(rs, 0.12, {Transparency = 0.6})
                     tween(arrow, 0.12, {TextColor3 = UI.Theme.Muted})
                 end)
@@ -987,6 +1017,8 @@ function UI:CreateWindow(config)
                 local row = Instance.new("ImageLabel")
                 row.BackgroundTransparency = 1
                 row.Image = GetImage("button1.png")
+                row.ScaleType = Enum.ScaleType.Slice
+                row.SliceCenter = Rect.new(12, 12, 12, 12)
                 row.Size = UDim2.new(1, 0, 0, 36)
                 row.Parent = holder
                 corner(row, 6)
@@ -1043,6 +1075,8 @@ function UI:CreateWindow(config)
                 local row = Instance.new("ImageLabel")
                 row.BackgroundTransparency = 1
                 row.Image = GetImage("button1.png")
+                row.ScaleType = Enum.ScaleType.Slice
+                row.SliceCenter = Rect.new(12, 12, 12, 12)
                 row.Size = UDim2.new(1, 0, 0, 54)
                 row.Parent = holder
                 corner(row, 6)
@@ -1059,6 +1093,8 @@ function UI:CreateWindow(config)
                 local bar = Instance.new("ImageLabel")
                 bar.BackgroundTransparency = 1
                 bar.Image = GetImage("shape_horizontal1.png")
+                bar.ScaleType = Enum.ScaleType.Slice
+                bar.SliceCenter = Rect.new(12, 12, 12, 12)
                 bar.Position = UDim2.fromOffset(11, 34)
                 bar.Size = UDim2.new(1, -22, 0, 6)
                 bar.Parent = row
@@ -1067,6 +1103,8 @@ function UI:CreateWindow(config)
                 local fill = Instance.new("ImageLabel")
                 fill.BackgroundTransparency = 1
                 fill.Image = GetImage("shape_horizontal2.png")
+                fill.ScaleType = Enum.ScaleType.Slice
+                fill.SliceCenter = Rect.new(12, 12, 12, 12)
                 fill.Size = UDim2.fromScale(0, 1)
                 fill.Parent = bar
                 corner(fill, 4)
@@ -1075,6 +1113,8 @@ function UI:CreateWindow(config)
                 knob.AnchorPoint = Vector2.new(0.5, 0.5)
                 knob.BackgroundTransparency = 1
                 knob.Image = GetImage("shape_horizontal3.png")
+                knob.ScaleType = Enum.ScaleType.Slice
+                knob.SliceCenter = Rect.new(12, 12, 12, 12)
                 knob.Size = UDim2.fromOffset(12, 12)
                 knob.Parent = bar
                 corner(knob, 8)
@@ -1148,6 +1188,8 @@ function UI:CreateWindow(config)
                 local row = Instance.new("ImageLabel")
                 row.BackgroundTransparency = 1
                 row.Image = GetImage("button1.png")
+                row.ScaleType = Enum.ScaleType.Slice
+                row.SliceCenter = Rect.new(12, 12, 12, 12)
                 row.Size = UDim2.new(1, 0, 0, 54)
                 row.Parent = holder
                 corner(row, 6)
@@ -1159,6 +1201,8 @@ function UI:CreateWindow(config)
                 local selectFrame = Instance.new("ImageLabel")
                 selectFrame.BackgroundTransparency = 1
                 selectFrame.Image = GetImage("dropdown_before.png")
+                selectFrame.ScaleType = Enum.ScaleType.Slice
+                selectFrame.SliceCenter = Rect.new(12, 12, 12, 12)
                 selectFrame.Position = UDim2.fromOffset(9, 27)
                 selectFrame.Size = UDim2.new(1, -18, 0, 21)
                 selectFrame.Parent = row
@@ -1177,6 +1221,8 @@ function UI:CreateWindow(config)
                 local popup = Instance.new("ImageLabel")
                 popup.BackgroundTransparency = 1
                 popup.Image = GetImage("dropdown_after.png")
+                popup.ScaleType = Enum.ScaleType.Slice
+                popup.SliceCenter = Rect.new(12, 12, 12, 12)
                 popup.BorderSizePixel = 0
                 popup.Visible = false
                 popup.ZIndex = 100
@@ -1225,6 +1271,8 @@ function UI:CreateWindow(config)
                         btn.MouseEnter:Connect(function()
                             btn.BackgroundTransparency = 1
                             btn.Image = GetImage("dropdown_selected_bg.png")
+                            btn.ScaleType = Enum.ScaleType.Slice
+                            btn.SliceCenter = Rect.new(12, 12, 12, 12)
                         end)
                         btn.MouseLeave:Connect(function()
                             btn.BackgroundTransparency = 1
@@ -1297,6 +1345,8 @@ function UI:CreateWindow(config)
                 local row = Instance.new("ImageLabel")
                 row.BackgroundTransparency = 1
                 row.Image = GetImage("button1.png")
+                row.ScaleType = Enum.ScaleType.Slice
+                row.SliceCenter = Rect.new(12, 12, 12, 12)
                 row.Size = UDim2.new(1, 0, 0, 36)
                 row.Parent = holder
                 corner(row, 6)
@@ -1364,6 +1414,8 @@ function UI:CreateWindow(config)
                 local row = Instance.new("ImageLabel")
                 row.BackgroundTransparency = 1
                 row.Image = GetImage("button1.png")
+                row.ScaleType = Enum.ScaleType.Slice
+                row.SliceCenter = Rect.new(12, 12, 12, 12)
                 row.Size = UDim2.new(1, 0, 0, 54)
                 row.Parent = holder
                 corner(row, 6)
@@ -1416,6 +1468,8 @@ function UI:CreateWindow(config)
                 local row = Instance.new("ImageLabel")
                 row.BackgroundTransparency = 1
                 row.Image = GetImage("button1.png")
+                row.ScaleType = Enum.ScaleType.Slice
+                row.SliceCenter = Rect.new(12, 12, 12, 12)
                 row.Size = UDim2.new(1, 0, 0, 36)
                 row.Parent = holder
                 corner(row, 6)
@@ -1451,6 +1505,8 @@ function UI:CreateWindow(config)
                 local popup = Instance.new("ImageLabel")
                 popup.BackgroundTransparency = 1
                 popup.Image = GetImage("dropdown_after.png")
+                popup.ScaleType = Enum.ScaleType.Slice
+                popup.SliceCenter = Rect.new(12, 12, 12, 12)
                 popup.BorderSizePixel = 0
                 popup.Visible = false
                 popup.ZIndex = 120
@@ -1597,7 +1653,7 @@ function UI:CreateWindow(config)
     -- initial animation
     root.Visible = true
     task.defer(function()
-        tween(root, 0.22, {Size = size, BackgroundTransparency = 0})
+        tween(root, 0.22, {Size = size, BackgroundTransparency = 1})
     end)
 
     return Window
