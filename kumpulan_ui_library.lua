@@ -396,13 +396,35 @@ function UI:CreateWindow(config)
     topAccent.Parent = root
 
     -- left navigation
-    local sidebar = Instance.new("Frame")
+    local sidebar = Instance.new("ImageLabel")
     sidebar.Name = "Sidebar"
-    sidebar.BackgroundColor3 = self.Theme.Surface
+    sidebar.BackgroundTransparency = 1
+    sidebar.Image = GetImage("frame_and_Background.png")
     sidebar.BorderSizePixel = 0
     sidebar.Size = UDim2.new(0, 190, 1, 0)
     sidebar.Parent = root
     Window.Sidebar = sidebar
+
+    local profileFrame = Instance.new("ImageLabel")
+    profileFrame.BackgroundTransparency = 1
+    profileFrame.Image = GetImage("frame_profile.png")
+    profileFrame.Size = UDim2.fromOffset(160, 45)
+    profileFrame.Position = UDim2.new(0, 15, 1, -60)
+    profileFrame.Parent = sidebar
+
+    local profileIcon = Instance.new("ImageLabel")
+    profileIcon.BackgroundTransparency = 1
+    profileIcon.Image = GetImage("humanoid.png")
+    profileIcon.Size = UDim2.fromOffset(30, 30)
+    profileIcon.Position = UDim2.fromOffset(8, 7)
+    profileIcon.Parent = profileFrame
+
+    local profileName = makeText(profileFrame, LocalPlayer and LocalPlayer.Name or "User", 12, self.Theme.Text)
+    profileName.Position = UDim2.fromOffset(45, 15)
+    profileName.Size = UDim2.new(1, -55, 0, 15)
+    profileName.TextXAlignment = Enum.TextXAlignment.Left
+
+
 
     -- logo / title
     local brand = Instance.new("Frame")
@@ -598,7 +620,7 @@ function UI:CreateWindow(config)
         root.BackgroundTransparency = 1
     root.Image = GetImage("background_ui.png")
     root.BackgroundColor3 = self.Theme.Background
-        sidebar.BackgroundColor3 = self.Theme.Surface
+        -- sidebar uses image
         header.BackgroundColor3 = self.Theme.Surface
         topAccent.BackgroundColor3 = self.Theme.Accent
         rootStroke.Color = self.Theme.Stroke
@@ -807,9 +829,9 @@ function UI:CreateWindow(config)
                 Controls = {},
             }
 
-            local frame = Instance.new("Frame")
-            frame.BackgroundColor3 = UI.Theme.Surface
-            frame.BackgroundTransparency = 0.08
+            local frame = Instance.new("ImageLabel")
+            frame.BackgroundTransparency = 1
+            frame.Image = GetImage("frame_ui.png")
             frame.BorderSizePixel = 0
             frame.AutomaticSize = Enum.AutomaticSize.Y
             frame.Size = UDim2.new(1, 0, 0, 0)
@@ -1049,9 +1071,10 @@ function UI:CreateWindow(config)
                 fill.Parent = bar
                 corner(fill, 4)
 
-                local knob = Instance.new("Frame")
+                local knob = Instance.new("ImageLabel")
                 knob.AnchorPoint = Vector2.new(0.5, 0.5)
-                knob.BackgroundColor3 = Color3.new(1, 1, 1)
+                knob.BackgroundTransparency = 1
+                knob.Image = GetImage("shape_horizontal3.png")
                 knob.Size = UDim2.fromOffset(12, 12)
                 knob.Parent = bar
                 corner(knob, 8)
