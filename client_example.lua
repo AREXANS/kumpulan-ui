@@ -3,11 +3,7 @@
     This script demonstrates how to load and use the `kumpulan_ui_library.lua` component system.
 ]]
 
--- Usually you would load the library via HTTP:
--- local UI = loadstring(game:HttpGet("https://raw.githubusercontent.com/AREXANS/kumpulan-ui/main/kumpulan_ui_library.lua"))()
-
--- For local testing within executor environments, if running locally:
-local UI = loadstring(readfile("kumpulan_ui_library.lua"))()
+local UI = loadstring(game:HttpGet("https://raw.githubusercontent.com/AREXANS/kumpulan-ui/refs/heads/feature/kumpulan-ui-library-2118273648041298221/kumpulan_ui_library.lua"))()
 
 local Window = UI:Window({
     Name = "My Custom Hub",
